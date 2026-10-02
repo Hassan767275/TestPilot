@@ -21,7 +21,7 @@ export default function Home() {
           <label htmlFor="url" className="text-left block px-2 text-[#525252] mb-2">Website URL</label>
           <div className="border border-neutral-200 rounded-xl flex items-center bg-white pr-2">
             <input
-              className="pl-2 flex-1 min-w-0 h-16"
+              className="pl-2 flex-1 min-w-0 h-16 outline-none"
               type="text"
               id="url"
               name="url"
