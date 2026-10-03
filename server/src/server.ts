@@ -20,6 +20,12 @@ app.post("/api/tests", (req, res) => {
         return res.status(400).json({ message: "A URL is required."})
     }
 
+    const urlRegex = /^https?:\/\/[^\s/$.?#].[^\s]*$/
+
+    if (!urlRegex.test(url)) {
+        return res.status(400).json({ message: "A URL is required."})
+    }
+
     return res.status(200).json({ message: "url receieved"})
 })
 
