@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Header from "./components/header";
+import { createUrl } from "./lib/url";
+import { create } from "domain";
 
 export default function Home() {
-  async function sendRequest() {
+  async function sendRequest(formData: FormData) {
     "use server";
-    const request = await fetch("http://localhost:8000");
+    const url = formData.get("url") as string
+    const request = await createUrl(url)
+    const response = await request.json()
+    console.log(response.message)
   }
+
   return (
     <div>
       <Header />
@@ -17,7 +23,7 @@ export default function Home() {
           TestPilot sends an automated browser to your site and reports what it
           finds.
         </h2>
-        <form className="px-1 w-full max-w-3xl">
+        <form className="px-1 w-full max-w-3xl" action={sendRequest}>
           <label htmlFor="url" className="text-left block px-2 text-[#525252] mb-2">Website URL</label>
           <div className="border border-neutral-200 rounded-xl flex items-center bg-white pr-2">
             <input
