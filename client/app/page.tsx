@@ -1,21 +1,21 @@
 import Image from "next/image";
 import Header from "./components/header";
 import { createUrl } from "./lib/url";
-import { create } from "domain";
+import TestTable from "./components/tests-table";
 
-export default function Home() {
+export default async function Home() {
   async function sendRequest(formData: FormData) {
     "use server";
     const url = formData.get("url") as string
-    const request = await createUrl(url)
-    const response = await request.json()
-    console.log(response.message)
+    await createUrl(url)
   }
 
+  await fetch("http://localhost:8000/api/tests")
+
   return (
-    <div>
+    <>
       <Header />
-      <div className="flex flex-col items-center text-center mt-5 sm:mt-15">
+      <main className="flex flex-col items-center text-center mt-5 sm:mt-15">
         <h1 className="font-bold text-3xl sm:text-5xl mb-4 sm:mb-8">
           Test any web app by pasting its URL
         </h1>
@@ -24,7 +24,7 @@ export default function Home() {
           finds.
         </h2>
         <form className="px-1 w-full max-w-3xl" action={sendRequest}>
-          <label htmlFor="url" className="text-left block px-2 text-[#525252] mb-2">Website URL</label>
+          <label htmlFor="url" className="text-left block px-2 text-[#525252] mb-2 mt-4 sm:mt-0">Website URL</label>
           <div className="border border-neutral-200 rounded-xl flex items-center bg-white pr-2">
             <input
               className="pl-2 flex-1 min-w-0 h-16 outline-none"
@@ -34,12 +34,13 @@ export default function Home() {
               placeholder="https://your-app.com"
               required
             ></input>
-            <button className="bg-black text-white px-4 py-2 rounded-lg">
+            <button className="bg-black text-white px-4 py-2 rounded-lg hover:bg-neutral-700">
               Run test
             </button>
           </div>
         </form>
-      </div>
-    </div>
+        <TestTable />
+      </main>
+    </>
   );
 }
