@@ -10,7 +10,9 @@ export default async function Home() {
     await createUrl(url)
   }
 
-  await fetch("http://localhost:8000/api/tests")
+  const response = await fetch("http://localhost:8000/api/tests")
+  const json = await response.json()
+
 
   return (
     <>
@@ -39,7 +41,7 @@ export default async function Home() {
             </button>
           </div>
         </form>
-        <TestTable />
+        <TestTable data={json.data}/>
       </main>
     </>
   );

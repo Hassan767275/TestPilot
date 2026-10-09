@@ -1,5 +1,5 @@
 export async function createUrl(url: string) {
-  const request = await fetch("http://localhost:8000/api/tests", {
+  const response = await fetch("http://localhost:8000/api/tests", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -8,5 +8,5 @@ export async function createUrl(url: string) {
       url
     }),
   });
-  return request
+  return response
 }

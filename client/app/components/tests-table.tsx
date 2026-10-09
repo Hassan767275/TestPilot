@@ -1,15 +1,41 @@
-export default function TestTable() {
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { DataList } from "../lib/types";
+
+export default function TestTable({ data }: { data: DataList }) {
+  console.log(data);
   return (
-    <div className="w-full pl-2 mt-6">
-      <p className="text-[#525252] text-left">TESTS</p>
-      <table>
-        <tr>
-          <th>ID</th>
-          <th>URL</th>
-          <th>STATUS</th>
-          <th>CREATED</th>
-        </tr>
-      </table>
+    <div className="w-full px-1">
+      <Table>
+        <TableCaption className="text-[#525252] text-left font-bold text-lg caption-top">
+          TESTS
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>URL</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>CREATED</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map(({ id, url, status, created_at }) => (
+            <TableRow key={id}>
+              <TableHead>{id}</TableHead>
+              <TableHead>{url}</TableHead>
+              <TableHead>{status}</TableHead>
+              <TableHead>{created_at}</TableHead>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
