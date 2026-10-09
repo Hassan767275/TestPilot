@@ -2,17 +2,18 @@ import Image from "next/image";
 import Header from "./components/header";
 import { createUrl } from "./lib/url";
 import TestTable from "./components/tests-table";
+import { revalidatePath } from "next/cache";
 
 export default async function Home() {
   async function sendRequest(formData: FormData) {
     "use server";
-    const url = formData.get("url") as string
-    await createUrl(url)
+    const url = formData.get("url") as string;
+    await createUrl(url);
+    revalidatePath('/')
   }
 
-  const response = await fetch("http://localhost:8000/api/tests")
-  const json = await response.json()
-
+  const response = await fetch("http://localhost:8000/api/tests");
+  const json = await response.json();
 
   return (
     <>
@@ -26,7 +27,12 @@ export default async function Home() {
           finds.
         </h2>
         <form className="px-1 w-full max-w-3xl" action={sendRequest}>
-          <label htmlFor="url" className="text-left block px-2 text-[#525252] mb-2 mt-4 sm:mt-0">Website URL</label>
+          <label
+            htmlFor="url"
+            className="text-left block px-2 text-[#525252] mb-2 mt-4 sm:mt-0"
+          >
+            Website URL
+          </label>
           <div className="border border-neutral-200 rounded-xl flex items-center bg-white pr-2">
             <input
               className="pl-2 flex-1 min-w-0 h-16 outline-none"
@@ -41,7 +47,7 @@ export default async function Home() {
             </button>
           </div>
         </form>
-        <TestTable data={json.data}/>
+        <TestTable data={json.data} />
       </main>
     </>
   );
