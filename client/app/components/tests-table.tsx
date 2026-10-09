@@ -2,7 +2,6 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -10,9 +9,8 @@ import {
 import type { DataList } from "../lib/types";
 
 export default function TestTable({ data }: { data: DataList }) {
-  console.log(data);
   return (
-    <div className="w-full px-1">
+    <div className="w-full max-w-3xl px-1">
       <Table>
         <TableCaption className="text-[#525252] text-left font-bold text-lg caption-top">
           TESTS
