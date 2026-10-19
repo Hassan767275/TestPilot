@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import pool from "./db/db";
 import authRouter from "./routes/auth";
 
 const app = express();
