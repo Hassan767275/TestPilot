@@ -1,13 +1,24 @@
-import "dotenv/config"
+import "dotenv/config";
 import pool from "./db/db";
 
 async function pollDatabase() {
-  const rows = await pool.query(
-    `SELECT status FROM tests
+  try {
+    const { rows } = await pool.query(
+      `SELECT status FROM tests
     where status = 'pending'`,
-  );
-  console.log(rows)
-}
+    );
 
+    for (const row of rows) {
+      console.log(`reading progress brochacho : ${row.status}`);
+    }
+
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+  } finally {
+    setTimeout(pollDatabase, 1000)
+  }
+}
 
 pollDatabase()
