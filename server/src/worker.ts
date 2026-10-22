@@ -1,24 +1,28 @@
 import "dotenv/config";
 import pool from "./db/db";
+import { chromium } from "playwright";
 
 async function pollDatabase() {
   try {
     const { rows } = await pool.query(
-      `SELECT status FROM tests
+      `SELECT id, url, status, created_at FROM tests
     where status = 'pending'`,
     );
 
     for (const row of rows) {
-      console.log(`reading progress brochacho : ${row.status}`);
+      const browser = await chromium.launch()
+      const page = await browser.newPage()
+      await page.goto(row.url)
+      await page.screenshot({ path: `screenshots/${row.id}.png`})
+      await browser.close()
     }
-
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
     }
   } finally {
-    setTimeout(pollDatabase, 1000)
+    setTimeout(pollDatabase, 1000);
   }
 }
 
-pollDatabase()
+pollDatabase();
