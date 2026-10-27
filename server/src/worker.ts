@@ -1,6 +1,7 @@
 import "dotenv/config";
 import pool from "./db/db";
 import { chromium } from "playwright";
+import type { Data } from "@/shared/types";
 
 async function pollDatabase() {
   try {
@@ -10,11 +11,7 @@ async function pollDatabase() {
     );
 
     for (const row of rows) {
-      const browser = await chromium.launch()
-      const page = await browser.newPage()
-      await page.goto(row.url)
-      await page.screenshot({ path: `screenshots/${row.id}.png`})
-      await browser.close()
+      await visitSite(row);
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -23,6 +20,14 @@ async function pollDatabase() {
   } finally {
     setTimeout(pollDatabase, 1000);
   }
+}
+
+async function visitSite(row: Data) {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto(row.url);
+  await page.screenshot({ path: `screenshots/${row.id}.png` });
+  await browser.close();
 }
 
 pollDatabase();
