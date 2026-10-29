@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Header from "./components/header";
 import { createUrl } from "./lib/url";
 import TestTable from "./components/tests-table";
@@ -13,7 +12,8 @@ export default async function Home() {
   }
 
   const response = await fetch("http://localhost:8000/api/tests");
-  const json = await response.json();
+  const { data } = await response.json();
+  console.log(data)
 
   return (
     <>
@@ -47,7 +47,7 @@ export default async function Home() {
             </button>
           </div>
         </form>
-        <TestTable data={json.data} />
+        <TestTable data={data} />
       </main>
     </>
   );

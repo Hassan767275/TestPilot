@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -7,8 +8,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { DataList } from "../lib/types";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function TestTable({ data }: { data: DataList }) {
+  const router = useRouter();
+  function pollData() {
+    for (const url of data) {
+      if (url.status === "pending") {
+        router.refresh();
+        break
+      }
+    }
+  }
+
+  useEffect(() => {
+    const timerId = setTimeout(pollData, 2000);
+
+    return () => {
+      clearTimeout(timerId)
+    }
+  }, [data]);
+
   return (
     <div className="w-full max-w-3xl px-1">
       <Table>
