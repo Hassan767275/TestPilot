@@ -44,8 +44,11 @@ export async function getTest(req: Request, res: Response) {
       `SELECT id, url, status, TO_CHAR(created_at, 'FMMonth DD, YYYY') as created_at FROM TESTS`,
     );
   } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message)
+    }
     return res.status(500).json({ message: "unable to fetch data" });
   }
-
+ console.log(data.rows)
   return res.status(200).json({ data: data.rows });
 }
