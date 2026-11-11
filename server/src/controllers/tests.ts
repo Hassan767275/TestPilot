@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import pool from "../db/db";
+import { myQueue } from "../queue";
 
 export async function createTest(req: Request, res: Response) {
   const { url } = req.body;
-  console.log(url);
 
   if (!url || url.trim() === "") {
     return res.status(400).json({ message: "A URL is required." });
@@ -33,6 +33,7 @@ export async function createTest(req: Request, res: Response) {
   }
 
   const { id, status } = result?.rows[0];
+  await myQueue.add("testUrl", { id });
 
   return res.status(200).json({ testId: id, status });
 }
@@ -45,7 +46,7 @@ export async function getTest(req: Request, res: Response) {
     );
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error.message)
+      console.log(error.message);
     }
     return res.status(500).json({ message: "unable to fetch data" });
   }
