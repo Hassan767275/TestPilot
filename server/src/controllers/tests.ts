@@ -49,6 +49,5 @@ export async function getTest(req: Request, res: Response) {
     }
     return res.status(500).json({ message: "unable to fetch data" });
   }
- console.log(data.rows)
   return res.status(200).json({ data: data.rows });
 }
