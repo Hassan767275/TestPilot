@@ -22,7 +22,7 @@ export async function createTest(req: Request, res: Response) {
         INSERT INTO tests
         (url, status)
         VALUES($1, $2)
-        RETURNING id, status
+        RETURNING id, url, status, created_at
         `,
       [url, "pending"],
     );
@@ -32,10 +32,10 @@ export async function createTest(req: Request, res: Response) {
     }
   }
 
-  const { id, status } = result?.rows[0];
-  await myQueue.add("testUrl", { id });
+  const row = result?.rows[0];
+  await myQueue.add("testUrl", row);
 
-  return res.status(200).json({ testId: id, status });
+  return res.status(200).json({ row });
 }
 
 export async function getTest(req: Request, res: Response) {
