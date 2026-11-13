@@ -3,17 +3,17 @@ import pool from "./db/db";
 import { chromium } from "playwright";
 import type { Data } from "@/shared/types";
 import { Worker } from "bullmq";
-import IORedis from 'ioredis'
+import IORedis from "ioredis";
 
-const connection = new IORedis({ maxRetriesPerRequest: null})
+const connection = new IORedis({ maxRetriesPerRequest: null });
 
 const worker = new Worker(
-  'tests',
-  async job => {
-    await testSite(job.data)
+  "tests",
+  async (job) => {
+    await testSite(job.data);
   },
   { connection },
-)
+);
 
 async function testSite(row: Data) {
   const browser = await chromium.launch();
@@ -28,8 +28,8 @@ async function testSite(row: Data) {
       await updateRow(row.id, "failed");
     }
   } catch (error) {
-    if (error instanceof Error){
-      console.log(error.message)
+    if (error instanceof Error) {
+      console.log(error.message);
     }
     await updateRow(row.id, "failed");
   } finally {
@@ -46,6 +46,5 @@ async function updateRow(id: string, status: "complete" | "failed") {
     `,
     [status, id],
   );
-  console.log(`row ${id} updated status: ${status}`)
+  console.log(`row ${id} updated status: ${status}`);
 }
-
