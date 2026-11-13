@@ -25,19 +25,19 @@ async function testSite(row: Data) {
     if (response?.ok()) {
       await updateRow(row.id, "complete");
     } else {
-      await updateRow(row.id, "error");
+      await updateRow(row.id, "failed");
     }
   } catch (error) {
     if (error instanceof Error){
       console.log(error.message)
     }
-    await updateRow(row.id, "error");
+    await updateRow(row.id, "failed");
   } finally {
     await browser.close();
   }
 }
 
-async function updateRow(id: string, status: "complete" | "error") {
+async function updateRow(id: string, status: "complete" | "failed") {
   await pool.query(
     `
     UPDATE tests
