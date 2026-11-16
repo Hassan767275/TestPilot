@@ -20,13 +20,16 @@ async function testSite(row: Data) {
   try {
     const page = await browser.newPage();
     const response = await page.goto(row.url);
-    await page.screenshot({ path: `screenshots/${row.id}.png` });
+    await page.screenshot({ path: `../shared/screenshots/${row.id}.png` });
 
     if (response?.ok()) {
       await updateRow(row.id, "complete");
     } else {
       await updateRow(row.id, "failed");
     }
+    const testResults = {}
+
+    console.log(response)
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
