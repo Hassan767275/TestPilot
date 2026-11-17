@@ -18,7 +18,16 @@ const worker = new Worker(
 async function testSite(row: Data) {
   const browser = await chromium.launch();
   try {
+    const consoleErrors = []
     const page = await browser.newPage();
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        consoleErrors.push({
+          text: msg.text(),
+          location: msg.location().url
+        })
+      }
+    })
     const response = await page.goto(row.url);
     await page.screenshot({ path: `../shared/screenshots/${row.id}.png` });
 
