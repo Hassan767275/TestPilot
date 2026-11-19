@@ -4,6 +4,12 @@ import { chromium } from "playwright";
 import type { Data } from "@/shared/types";
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
+import {
+  ConsoleError,
+  PageError,
+  FailedRequest,
+  BadRequest,
+} from "./lib/types";
 
 const connection = new IORedis({ maxRetriesPerRequest: null });
 
@@ -18,10 +24,10 @@ const worker = new Worker(
 async function testSite(row: Data) {
   const browser = await chromium.launch();
   try {
-    const consoleErrors = [];
-    const pageErrors = [];
-    const failedRequests = [];
-    const badResponses = [];
+    const consoleErrors: ConsoleError[] = [];
+    const pageErrors: PageError[] = [];
+    const failedRequests: FailedRequest[] = [];
+    const badResponses: BadRequest[] = [];
 
     const page = await browser.newPage();
     page.on("console", (msg) => {
@@ -56,7 +62,8 @@ async function testSite(row: Data) {
     });
 
     const response = await page.goto(row.url);
-    await page.screenshot({ path: `../shared/screenshots/${row.id}.png` });
+    const path = `../shared/screenshots/${row.id}.png`;
+    await page.screenshot({ path });
 
     if (response?.ok()) {
       await updateRow(row.id, "complete");
@@ -73,17 +80,22 @@ async function testSite(row: Data) {
     }
 
     const timingPage = await page.evaluate(() => {
-      return performance.getEntriesByType('navigation')[0].toJSON() as PerformanceNavigationTiming
-    })
+      return performance
+        .getEntriesByType("navigation")[0]
+        ?.toJSON() as PerformanceNavigationTiming;
+    });
 
     const timing = timingPage
       ? {
           dnsMs: timingPage?.domainLookupEnd - timingPage?.domainLookupStart,
-          tlsMs: timingPage.secureConnectionStart > 0 ? timingPage.connectEnd - timingPage.secureConnectionStart : null,
+          tlsMs:
+            timingPage.secureConnectionStart > 0
+              ? timingPage.connectEnd - timingPage.secureConnectionStart
+              : null,
           ttfbMs: timingPage.responseStart - timingPage.requestStart,
           documentMs: timingPage.responseEnd - timingPage.responseStart,
           domContentLoadedMs: timingPage.domContentLoadedEventEnd,
-          loadMs: timingPage.loadEventEnd
+          loadMs: timingPage.loadEventEnd,
         }
       : null;
 
@@ -97,9 +109,14 @@ async function testSite(row: Data) {
       pageTitle: await page.title(),
       headers: await response?.allHeaders(),
       timing,
+      consoleErrors,
+      pageErrors,
+      failedRequests,
+      badResponses,
+      screenshotPath: path,
     };
 
-    console.log(response);
+    return testResults;
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
