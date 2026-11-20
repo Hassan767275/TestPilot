@@ -47,8 +47,15 @@ export async function testSite(row: Data) {
         });
       }
     });
-
-    const response = await page.goto(row.url);
+    let response;
+    try {
+        response = await page.goto(row.url);
+    } catch (error) {
+        await updateRow(row.id, "failed");
+        if (error instanceof Error) {
+            return error.message
+        }
+    }
     const path = `../shared/screenshots/${row.id}.png`;
     await page.screenshot({ path });
 
