@@ -6,7 +6,7 @@ import type {
   FailedRequest,
   BadRequest,
 } from "./lib/types";
-import { updateRow } from "./worker";
+import { updateRow } from "./db/updateDb";
 
 export async function testSite(row: Data) {
   const browser = await chromium.launch();
@@ -102,7 +102,7 @@ export async function testSite(row: Data) {
       badResponses,
       screenshotPath: path,
     };
-    console.log(testResults)
+
     return testResults;
   } catch (error) {
     if (error instanceof Error) {
