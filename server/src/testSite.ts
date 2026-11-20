@@ -115,7 +115,7 @@ export async function testSite(row: Data) {
     if (error instanceof Error) {
       console.log(error.message);
     }
-    await updateRow(row.id, "failed");
+    await updateRow(row.id, "error");
   } finally {
     await browser.close();
   }

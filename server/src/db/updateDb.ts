@@ -1,6 +1,6 @@
 import pool from "./db";
 
-export async function updateRow(id: string, status: "complete" | "failed") {
+export async function updateRow(id: string, status: "complete" | "failed" | "error") {
   await pool.query(
     `
     UPDATE tests
