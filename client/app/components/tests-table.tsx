@@ -31,7 +31,7 @@ export default function TestTable({ data }: { data: DataList }) {
   }, [data]);
 
   return (
-    <div className="w-full max-w-3xl px-1">
+    <div className="w-full max-w-3xl px-1 mb-5">
       <Table>
         <TableCaption className="text-[#525252] text-left font-bold text-lg caption-top">
           TESTS

@@ -2,7 +2,8 @@ import "dotenv/config";
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 import { testSite } from "./testSite";
-import { updateStatus, insertFindings } from "./db/updateDb";
+import { updateStatus } from "./db/testsTable";
+import { insertFindings } from "./db/findingsTable";
 import { generateReport } from "./generateReport";
 
 const connection = new IORedis({ maxRetriesPerRequest: null });

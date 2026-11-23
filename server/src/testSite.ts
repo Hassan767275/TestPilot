@@ -6,7 +6,7 @@ import type {
   FailedRequest,
   BadResponse,
 } from "./lib/types";
-import { updateStatus } from "./db/updateDb";
+import { updateStatus } from "./db/testsTable";
 
 export async function testSite(row: Data) {
   const browser = await chromium.launch();
