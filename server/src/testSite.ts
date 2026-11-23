@@ -4,7 +4,7 @@ import type {
   ConsoleError,
   PageError,
   FailedRequest,
-  BadRequest,
+  BadResponse,
 } from "./lib/types";
 import { updateRow } from "./db/updateDb";
 
@@ -14,7 +14,7 @@ export async function testSite(row: Data) {
     const consoleErrors: ConsoleError[] = [];
     const pageErrors: PageError[] = [];
     const failedRequests: FailedRequest[] = [];
-    const badResponses: BadRequest[] = [];
+    const badResponses: BadResponse[] = [];
 
     const page = await browser.newPage();
     page.on("console", (msg) => {
@@ -49,12 +49,12 @@ export async function testSite(row: Data) {
     });
     let response;
     try {
-        response = await page.goto(row.url);
+      response = await page.goto(row.url);
     } catch (error) {
-        await updateRow(row.id, "failed");
-        if (error instanceof Error) {
-            return error.message
-        }
+      await updateRow(row.id, "failed");
+      if (error instanceof Error) {
+        return error.message;
+      }
     }
     const path = `../shared/screenshots/${row.id}.png`;
     await page.screenshot({ path });
@@ -81,7 +81,7 @@ export async function testSite(row: Data) {
 
     const timing = timingPage
       ? {
-          dnsMs: timingPage?.domainLookupEnd - timingPage?.domainLookupStart,
+          dnsMs: timingPage.domainLookupEnd - timingPage.domainLookupStart,
           tlsMs:
             timingPage.secureConnectionStart > 0
               ? timingPage.connectEnd - timingPage.secureConnectionStart
