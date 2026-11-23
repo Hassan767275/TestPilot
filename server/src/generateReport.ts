@@ -19,5 +19,3 @@ export async function generateReport(testResults: TestResults | string) {
     },
   });
 }
-
-// make sure to create a type for test results

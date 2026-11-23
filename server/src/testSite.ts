@@ -6,7 +6,7 @@ import type {
   FailedRequest,
   BadResponse,
 } from "./lib/types";
-import { updateRow } from "./db/updateDb";
+import { updateStatus } from "./db/updateDb";
 
 export async function testSite(row: Data) {
   const browser = await chromium.launch();
@@ -51,7 +51,7 @@ export async function testSite(row: Data) {
     try {
       response = await page.goto(row.url);
     } catch (error) {
-      await updateRow(row.id, "failed");
+      await updateStatus(row.id, "failed");
       if (error instanceof Error) {
         return error.message;
       }
@@ -60,9 +60,9 @@ export async function testSite(row: Data) {
     await page.screenshot({ path });
 
     if (response?.ok()) {
-      await updateRow(row.id, "complete");
+      await updateStatus(row.id, "complete");
     } else {
-      await updateRow(row.id, "failed");
+      await updateStatus(row.id, "failed");
     }
 
     const redirectChain = [];
@@ -115,7 +115,7 @@ export async function testSite(row: Data) {
     if (error instanceof Error) {
       console.log(error.message);
     }
-    await updateRow(row.id, "error");
+    await updateStatus(row.id, "error");
   } finally {
     await browser.close();
   }

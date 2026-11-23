@@ -45,3 +45,10 @@ export interface TestResults {
   badResponses: BadResponse[];
   screenshotPath: string;
 }
+
+export interface Finding {
+  testId: string;
+  severity: "none" | "low" | "medium" | "high";
+  title: string;
+  report: string;
+}
