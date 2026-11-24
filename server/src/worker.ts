@@ -37,14 +37,22 @@ const worker = new Worker(
         };
 
         await insertFindings(finding);
+
+        if (typeof testResults === "string") {
+          return await updateStatus(job.data.id, "failed");
+        } else if (testResults.status !== undefined && testResults.status >= 400) {
+          return await updateStatus(job.data.id, "failed");
+        }
+        return await updateStatus(job.data.id, "complete");
+
       } catch (error) {
         if (error instanceof Error) {
           console.log(error.message);
         }
-        await updateStatus(job.data.id, "error");
+        return await updateStatus(job.data.id, "error");
       }
     } else {
-      await updateStatus(job.data.id, "error");
+      return await updateStatus(job.data.id, "error");
     }
   },
   { connection },

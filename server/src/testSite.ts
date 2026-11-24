@@ -51,19 +51,12 @@ export async function testSite(row: Data) {
     try {
       response = await page.goto(row.url);
     } catch (error) {
-      await updateStatus(row.id, "failed");
       if (error instanceof Error) {
         return error.message;
       }
     }
     const path = `../shared/screenshots/${row.id}.png`;
     await page.screenshot({ path });
-
-    if (response?.ok()) {
-      await updateStatus(row.id, "complete");
-    } else {
-      await updateStatus(row.id, "failed");
-    }
 
     const redirectChain = [];
     let currentRequest = response?.request() ?? null;
