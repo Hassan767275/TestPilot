@@ -6,14 +6,39 @@ import type { TestResults } from "./lib/types";
 const client = new OpenAI();
 
 const findings = z.object({
-  severity: z.enum(["none", "low", "medium", "high"]),
   report: z.string(),
+  severity: z.enum(["none", "low", "medium", "high"]),
 });
 
 export async function generateReport(testResults: TestResults | string) {
   return await client.responses.parse({
     model: "gpt-6-luna",
-    input: `You are a LLM that is responsible for generating reports for websites the worker has already tested. The worker has sent you the results of the site it tested. It is your responsiblity to generate a report of all findings so that users can see what is working and what is not working on their site. Your report should be insighful and caterted towards developers since developers will be the ones who want to know if there is any issue with there site that they developed. Here is the test results: ${JSON.stringify(testResults)}`,
+    input: [
+      {
+        role: "system",
+        content: `
+          You are a QA engineer writing a test report for a website that an automated browser just tested. Your reader is the developer who built the site.
+
+          Write the report in markdown:
+          1. Start with a one or two sentence summary of the site's overall health.
+          2. List each issue you found, with the evidence (the exact URL, status code, or error message) and a likely fix.
+          3. Briefly note what is working.
+
+          Only report issues that are supported by the test results. Do not invent problems. If a field is null or missing, it means that data wasn't available, not that something failed, unless the results say otherwise.
+
+          Choose ONE overall severity for the site:
+          - high: the site is unusable. It could not be reached (DNS, SSL, timeout, connection error) or the main page returned a 4xx/5xx status.
+          - medium: the page loads but something users would notice is broken, such as uncaught JavaScript errors or failed scripts, stylesheets, or API requests.
+          - low: minor problems, such as broken images or non-critical assets, console errors with no visible impact, missing security headers, or no HTTPS.
+          - none: no issues found.
+
+          If the test results are a plain error message instead of an object, the site could not be reached. Explain what the error means in plain terms and how the developer could fix it. Judge the site only by the test results. Never assume an error status was intended.`,
+      },
+      {
+        role: "user",
+        content: `Test results: ${JSON.stringify(testResults)}`,
+      },
+    ],
     text: {
       format: zodTextFormat(findings, "findings"),
     },
