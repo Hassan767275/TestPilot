@@ -12,5 +12,4 @@ export async function updateStatus(
     `,
     [status, id],
   );
-  console.log(`row ${id} updated status: ${status}`);
 }
