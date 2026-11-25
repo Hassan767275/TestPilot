@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import pool from "../db/db";
 import { myQueue } from "../queue";
+import { insertTest } from "../db/testsTable";
 
 export async function createTest(req: Request, res: Response) {
   const { url } = req.body;
@@ -17,15 +18,7 @@ export async function createTest(req: Request, res: Response) {
 
   let result;
   try {
-    result = await pool.query(
-      `
-        INSERT INTO tests
-        (url, status)
-        VALUES($1, $2)
-        RETURNING id, url, status, created_at
-        `,
-      [url, "pending"],
-    );
+    result = await insertTest(url, "pending")
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: `${error.message}` });
@@ -34,7 +27,7 @@ export async function createTest(req: Request, res: Response) {
 
   const row = result?.rows[0];
   await myQueue.add("testUrl", row);
-
+  
   return res.status(200).json({ row });
 }
 

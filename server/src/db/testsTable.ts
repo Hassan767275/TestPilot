@@ -1,5 +1,17 @@
 import pool from "./db";
 
+export async function insertTest(url: string, status: string) {
+  return await pool.query(
+    `
+      INSERT INTO tests
+      (url, status)
+      VALUES($1, $2)
+      RETURNING id, url, status, created_at
+      `,
+    [url, status],
+  );
+}
+
 export async function updateStatus(
   id: string,
   status: "complete" | "failed" | "error",
