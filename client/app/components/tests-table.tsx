@@ -32,13 +32,12 @@ export default function TestTable({ data }: { data: DataList }) {
   }, [data]);
 
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const date = new Date()
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
     timeZone: userTimeZone,
     month: "short",
     day: "2-digit",
     year: "numeric",
-  }).format(date)
+  })
 
 
   return (
@@ -62,7 +61,7 @@ export default function TestTable({ data }: { data: DataList }) {
               <TableCell>{id}</TableCell>
               <TableCell>{url}</TableCell>
               <TableCell>{status}</TableCell>
-              <TableCell>{formattedDate}</TableCell>
+              <TableCell>{dateFormatter.format(new Date(created_at))}</TableCell>
               {status === "failed" || status === "complete" ? (
                 <TableCell>View</TableCell>
               ) : status === "pending" ? (
