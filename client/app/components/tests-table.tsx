@@ -6,6 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCell,
 } from "@/components/ui/table";
 import type { DataList } from "../lib/types";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,16 @@ export default function TestTable({ data }: { data: DataList }) {
     };
   }, [data]);
 
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const date = new Date()
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    timeZone: userTimeZone,
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  }).format(date)
+
+
   return (
     <div className="w-full max-w-3xl px-1 mb-5">
       <Table>
@@ -47,17 +58,17 @@ export default function TestTable({ data }: { data: DataList }) {
         </TableHeader>
         <TableBody>
           {data.map(({ id, url, status, created_at }) => (
-            <TableRow key={id}>
-              <TableHead>{id}</TableHead>
-              <TableHead>{url}</TableHead>
-              <TableHead>{status}</TableHead>
-              <TableHead>{created_at}</TableHead>
+            <TableRow key={id} className="text-left">
+              <TableCell>{id}</TableCell>
+              <TableCell>{url}</TableCell>
+              <TableCell>{status}</TableCell>
+              <TableCell>{formattedDate}</TableCell>
               {status === "failed" || status === "complete" ? (
-                <TableHead>View</TableHead>
+                <TableCell>View</TableCell>
               ) : status === "pending" ? (
-                <TableHead>Generating...</TableHead>
+                <TableCell>Generating...</TableCell>
               ) : (
-                <TableHead>-</TableHead>
+                <TableCell>-</TableCell>
               )}
             </TableRow>
           ))}
