@@ -17,7 +17,7 @@ export default function TestTable({ data }: { data: DataList }) {
     for (const url of data) {
       if (url.status === "pending") {
         router.refresh();
-        break
+        break;
       }
     }
   }
@@ -26,8 +26,8 @@ export default function TestTable({ data }: { data: DataList }) {
     const timerId = setTimeout(pollData, 2000);
 
     return () => {
-      clearTimeout(timerId)
-    }
+      clearTimeout(timerId);
+    };
   }, [data]);
 
   return (
@@ -40,8 +40,9 @@ export default function TestTable({ data }: { data: DataList }) {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>URL</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>STATUS</TableHead>
             <TableHead>CREATED</TableHead>
+            <TableHead>REPORT</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -51,6 +52,13 @@ export default function TestTable({ data }: { data: DataList }) {
               <TableHead>{url}</TableHead>
               <TableHead>{status}</TableHead>
               <TableHead>{created_at}</TableHead>
+              {status === "failed" || status === "complete" ? (
+                <TableHead>View</TableHead>
+              ) : status === "pending" ? (
+                <TableHead>Generating...</TableHead>
+              ) : (
+                <TableHead>-</TableHead>
+              )}
             </TableRow>
           ))}
         </TableBody>
