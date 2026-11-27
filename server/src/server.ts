@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   return res.status(200).json({ message: "request recieved" });
 });
 
-app.use("/api", testsRouter);
+app.use("/api/tests", testsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

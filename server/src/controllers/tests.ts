@@ -18,7 +18,7 @@ export async function createTest(req: Request, res: Response) {
 
   let result;
   try {
-    result = await insertTest(url, "pending")
+    result = await insertTest(url, "pending");
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: `${error.message}` });
@@ -27,14 +27,14 @@ export async function createTest(req: Request, res: Response) {
 
   const row = result?.rows[0];
   await myQueue.add("testUrl", row);
-  
+
   return res.status(200).json({ row });
 }
 
 export async function getTest(req: Request, res: Response) {
   let data;
   try {
-    data = await getTests()
+    data = await getTests();
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
@@ -42,4 +42,34 @@ export async function getTest(req: Request, res: Response) {
     return res.status(500).json({ message: "unable to fetch data" });
   }
   return res.status(200).json({ data: data.rows });
+}
+
+export async function getResults(req: Request, res: Response) {
+  const test_id = req.params.test_id;
+  const idRegex = /^\d+$/;
+
+  if (typeof test_id !== "string") {
+    return res.status(400).json({ message: "Invalid Id" });
+  }
+
+  if (!idRegex.test(test_id)) {
+    return res.status(400).json({ message: "Invalid Id" });
+  }
+
+  const result = await pool.query(
+    `
+    SELECT test_id, severity, title, report
+    FROM findings
+    where test_id=$1
+    `,
+    [test_id],
+  );
+
+  if (result.rowCount === 0) { 
+    return res.status(404).json({ message: "There are no findings for that id"})
+  }
+
+  const findings = result.rows[0]
+
+  return res.status(200).json({ findings });
 }

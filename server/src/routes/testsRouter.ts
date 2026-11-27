@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { createTest, getTest } from "../controllers/tests";
+import { createTest, getTest, getResults } from "../controllers/tests";
 
 const testsRouter = Router()
 
-testsRouter.post("/tests", createTest)
-testsRouter.get("/tests", getTest)
+testsRouter.post("/", createTest)
+testsRouter.get("/", getTest)
+testsRouter.get("/:test_id/results", getResults)
 
 export default testsRouter
