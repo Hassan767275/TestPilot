@@ -39,7 +39,6 @@ export default function TestTable({ data }: { data: DataList }) {
     year: "numeric",
   })
 
-
   return (
     <div className="w-full max-w-3xl px-1 mb-5">
       <Table>
@@ -56,8 +55,10 @@ export default function TestTable({ data }: { data: DataList }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(({ id, url, status, created_at }) => (
-            <TableRow key={id} className="text-left">
+          {data.map(({ id, url, status, created_at }) => {
+            console.log(created_at)
+            console.log(dateFormatter.format(new Date(created_at)))
+            return <TableRow key={id} className="text-left">
               <TableCell>{id}</TableCell>
               <TableCell>{url}</TableCell>
               <TableCell>{status}</TableCell>
@@ -70,7 +71,7 @@ export default function TestTable({ data }: { data: DataList }) {
                 <TableCell>-</TableCell>
               )}
             </TableRow>
-          ))}
+          })}
         </TableBody>
       </Table>
     </div>

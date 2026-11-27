@@ -35,7 +35,7 @@ export async function getTest(req: Request, res: Response) {
   let data;
   try {
     data = await pool.query(
-      `SELECT id, url, status, TO_CHAR(created_at, 'FMMonth DD, YYYY') as created_at FROM TESTS`,
+      `SELECT id, url, status, created_at FROM TESTS`,
     );
   } catch (error) {
     if (error instanceof Error) {
