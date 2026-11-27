@@ -57,8 +57,6 @@ export default function TestTable({ data }: { data: DataList }) {
         </TableHeader>
         <TableBody>
           {data.map(({ id, url, status, created_at }) => {
-            console.log(created_at);
-            console.log(dateFormatter.format(new Date(created_at)));
             return (
               <TableRow key={id} className="text-left">
                 <TableCell>{id}</TableCell>
