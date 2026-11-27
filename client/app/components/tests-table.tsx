@@ -11,6 +11,7 @@ import {
 import type { DataList } from "../lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function TestTable({ data }: { data: DataList }) {
   const router = useRouter();
@@ -31,13 +32,13 @@ export default function TestTable({ data }: { data: DataList }) {
     };
   }, [data]);
 
-  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     timeZone: userTimeZone,
     month: "short",
     day: "2-digit",
     year: "numeric",
-  })
+  });
 
   return (
     <div className="w-full max-w-3xl px-1 mb-5">
@@ -56,21 +57,27 @@ export default function TestTable({ data }: { data: DataList }) {
         </TableHeader>
         <TableBody>
           {data.map(({ id, url, status, created_at }) => {
-            console.log(created_at)
-            console.log(dateFormatter.format(new Date(created_at)))
-            return <TableRow key={id} className="text-left">
-              <TableCell>{id}</TableCell>
-              <TableCell>{url}</TableCell>
-              <TableCell>{status}</TableCell>
-              <TableCell>{dateFormatter.format(new Date(created_at))}</TableCell>
-              {status === "failed" || status === "complete" ? (
-                <TableCell>View</TableCell>
-              ) : status === "pending" ? (
-                <TableCell>Generating...</TableCell>
-              ) : (
-                <TableCell>-</TableCell>
-              )}
-            </TableRow>
+            console.log(created_at);
+            console.log(dateFormatter.format(new Date(created_at)));
+            return (
+              <TableRow key={id} className="text-left">
+                <TableCell>{id}</TableCell>
+                <TableCell>{url}</TableCell>
+                <TableCell>{status}</TableCell>
+                <TableCell>
+                  {dateFormatter.format(new Date(created_at))}
+                </TableCell>
+                {status === "failed" || status === "complete" ? (
+                  <TableCell>
+                    <Link href={`/dashboard/${id}`} className="text-blue-600 underline">View</Link>
+                  </TableCell>
+                ) : status === "pending" ? (
+                  <TableCell>Generating...</TableCell>
+                ) : (
+                  <TableCell>-</TableCell>
+                )}
+              </TableRow>
+            );
           })}
         </TableBody>
       </Table>
