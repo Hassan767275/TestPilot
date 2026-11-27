@@ -25,3 +25,7 @@ export async function updateStatus(
     [status, id],
   );
 }
+
+export async function getTests() {
+  return await pool.query(`SELECT id, url, status, created_at FROM TESTS`);
+}

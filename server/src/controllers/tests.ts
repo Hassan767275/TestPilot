@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import pool from "../db/db";
 import { myQueue } from "../queue";
-import { insertTest } from "../db/testsTable";
+import { insertTest, getTests } from "../db/testsTable";
 
 export async function createTest(req: Request, res: Response) {
   const { url } = req.body;
@@ -34,9 +34,7 @@ export async function createTest(req: Request, res: Response) {
 export async function getTest(req: Request, res: Response) {
   let data;
   try {
-    data = await pool.query(
-      `SELECT id, url, status, created_at FROM TESTS`,
-    );
+    data = await getTests()
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
