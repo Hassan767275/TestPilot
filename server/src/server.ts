@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import authRouter from "./routes/auth";
+import testsRouter from "./routes/testsRouter";
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   return res.status(200).json({ message: "request recieved" });
 });
 
-app.use("/api", authRouter);
+app.use("/api", testsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
