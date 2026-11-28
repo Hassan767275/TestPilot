@@ -67,7 +67,6 @@ export async function getResults(req: Request, res: Response) {
     return res.status(500).json({ message: "Unable to retrieve findings"})
   }
   
-
   if (result.rowCount === 0) { 
     return res.status(404).json({ message: "There are no findings for that id"})
   }

@@ -9,8 +9,11 @@ export default async function Page(props: {
 
   const response = await fetch(`http://localhost:8000/api/tests/${test_id}/results`)
 
-  if (response.status === 404) {
-    notFound()
+  if (response.status === 404 || response.status === 400) {
+      notFound()
+  }
+  if (!response.ok) {
+    throw new Error("Unable to retrieve findings")
   }
 
   const findings = await response.json()
