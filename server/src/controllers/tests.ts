@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import pool from "../db/db";
 import { myQueue } from "../queue";
 import { insertTest, getTests } from "../db/testsTable";
+import { getFindings } from "../db/findingsTable";
 
 export async function createTest(req: Request, res: Response) {
   const { url } = req.body;
@@ -56,14 +57,7 @@ export async function getResults(req: Request, res: Response) {
     return res.status(400).json({ message: "Invalid Id" });
   }
 
-  const result = await pool.query(
-    `
-    SELECT test_id, severity, title, report
-    FROM findings
-    where test_id=$1
-    `,
-    [test_id],
-  );
+  const result = await getFindings(test_id)
 
   if (result.rowCount === 0) { 
     return res.status(404).json({ message: "There are no findings for that id"})

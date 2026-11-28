@@ -7,11 +7,20 @@ export default async function Home() {
   async function sendRequest(formData: FormData) {
     "use server";
     const url = formData.get("url") as string;
-    await createTest(url);
+    const response = await createTest(url);
+
+    if (response.status === 500) {
+      throw new Error("Unable to create test")
+    }
+
     revalidatePath('/')
   }
 
   const response = await fetch("http://localhost:8000/api/tests");
+  if (response.status === 500) {
+    throw new Error("Unable to fetch data")
+  }
+
   const { data } = await response.json();
 
   return (
@@ -35,7 +44,7 @@ export default async function Home() {
           <div className="border border-neutral-200 rounded-xl flex items-center bg-white pr-2">
             <input
               className="pl-2 flex-1 min-w-0 h-16 outline-none"
-              type="text"
+              type="url"
               id="url"
               name="url"
               placeholder="https://your-app.com"
