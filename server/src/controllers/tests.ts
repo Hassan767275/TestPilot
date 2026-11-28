@@ -57,7 +57,16 @@ export async function getResults(req: Request, res: Response) {
     return res.status(400).json({ message: "Invalid Id" });
   }
 
-  const result = await getFindings(test_id)
+  let result
+  try {
+    result = await getFindings(test_id)
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message)
+    }
+    return res.status(500).json({ message: "Unable to retrieve findings"})
+  }
+  
 
   if (result.rowCount === 0) { 
     return res.status(404).json({ message: "There are no findings for that id"})
