@@ -1,5 +1,5 @@
 import Header from "./components/header";
-import { createUrl } from "./lib/url";
+import { createTest } from "./lib/api";
 import TestTable from "./components/tests-table";
 import { revalidatePath } from "next/cache";
 
@@ -7,7 +7,7 @@ export default async function Home() {
   async function sendRequest(formData: FormData) {
     "use server";
     const url = formData.get("url") as string;
-    await createUrl(url);
+    await createTest(url);
     revalidatePath('/')
   }
 

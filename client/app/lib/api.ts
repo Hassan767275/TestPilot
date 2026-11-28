@@ -1,4 +1,4 @@
-export async function createUrl(url: string) {
+export async function createTest(url: string) {
   const response = await fetch("http://localhost:8000/api/tests", {
     method: "POST",
     headers: {
